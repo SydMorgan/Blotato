@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { fileURLToPath } from 'node:url';
 import { PrismaClient } from '@prisma/client';
+import { API_METADATA, APP_DEFAULTS, SOCIAL_PLATFORMS } from './constants/social-platforms.js';
 import { SocialPlatformFactory } from './integrations/social/social-platform.factory.js';
 import { CommentRepository } from './modules/comments/comment.repository.js';
 import { CommentService } from './modules/comments/comment.service.js';
@@ -26,9 +27,7 @@ export function createApp(prisma: PrismaClient) {
 
   app.get('/api/meta', (_req, res) => {
     res.json({
-      name: 'Blotato comments API',
-      version: '1.0.0',
-      status: 'ok',
+      ...API_METADATA,
       endpoints: {
         health: '/health',
         users: '/api/users',
@@ -65,7 +64,7 @@ export function createApp(prisma: PrismaClient) {
       const { name } = req.body ?? {};
       const user = await prisma.user.create({
         data: {
-          name: name?.trim() || `User ${Date.now().toString().slice(-4)}`,
+          name: name?.trim() || `${APP_DEFAULTS.userNamePrefix} ${Date.now().toString().slice(-4)}`,
         },
       });
       res.status(201).json(user);
@@ -112,6 +111,10 @@ export function createApp(prisma: PrismaClient) {
       const { userId, platform, externalId } = req.body ?? {};
       if (!userId || !platform || !externalId) {
         return res.status(400).json({ error: 'userId, platform, and externalId are required' });
+      }
+
+      if (!SOCIAL_PLATFORMS.includes(platform)) {
+        return res.status(400).json({ error: `Unsupported platform: ${platform}` });
       }
 
       const user = await prisma.user.findUnique({ where: { id: userId } });
@@ -174,6 +177,10 @@ export function createApp(prisma: PrismaClient) {
         return res.status(400).json({ error: 'authorName, body, platform, and externalId are required' });
       }
 
+      if (!SOCIAL_PLATFORMS.includes(platform)) {
+        return res.status(400).json({ error: `Unsupported platform: ${platform}` });
+      }
+
       const post = await prisma.post.findUnique({ where: { id: postId } });
       if (!post) {
         return res.status(404).json({ error: 'Post not found' });
@@ -207,9 +214,13 @@ export function createApp(prisma: PrismaClient) {
   app.post('/api/posts/:postId/comments/:commentId/replies', async (req, res) => {
     try {
       const { postId, commentId } = req.params;
-      const { body, authorName = 'Blotato', platform } = req.body ?? {};
+      const { body, authorName = APP_DEFAULTS.replyAuthor, platform } = req.body ?? {};
       if (!body || !platform) {
         return res.status(400).json({ error: 'body and platform are required' });
+      }
+
+      if (!SOCIAL_PLATFORMS.includes(platform)) {
+        return res.status(400).json({ error: `Unsupported platform: ${platform}` });
       }
 
       const post = await prisma.post.findUnique({ where: { id: postId } });

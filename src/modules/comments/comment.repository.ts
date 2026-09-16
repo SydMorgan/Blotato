@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
-import { CommentEntity, PostRecord, SaveCommentInput } from './comment.types.js';
+import type { CommentEntity, SaveCommentInput } from '../../types/comment.js';
+import type { PostRecord } from '../../types/post.js';
 
 export class CommentRepository {
   constructor(private readonly prisma: PrismaClient) {}
