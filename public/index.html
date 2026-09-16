@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blotato Social Console</title>
+    <style>
+      :root {
+        --bg: #f8f3ee;
+        --bg-2: #f2ebff;
+        --panel: rgba(255, 255, 255, 0.75);
+        --panel-strong: #fffdfb;
+        --purple: #5d3f8f;
+        --purple-dark: #382457;
+        --purple-soft: #efe6ff;
+        --cream: #f3e9dd;
+        --text: #231d2b;
+        --muted: #655d79;
+        --line: rgba(93, 63, 143, 0.16);
+        --success: #2f7f64;
+        --danger: #b14d63;
+      }
+
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: Inter, Arial, sans-serif;
+        background: linear-gradient(135deg, var(--bg), var(--bg-2));
+        color: var(--text);
+      }
+
+      .app {
+        max-width: 1300px;
+        margin: 36px auto;
+        padding: 24px;
+      }
+
+      .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 22px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .brand-mark {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        display: grid;
+        place-items: center;
+        font-weight: 800;
+        color: white;
+        background: linear-gradient(135deg, var(--purple), var(--purple-dark));
+      }
+
+      .brand-text {
+        letter-spacing: 0.08em;
+        font-weight: 800;
+        color: var(--purple-dark);
+      }
+
+      .pill {
+        border: 1px solid var(--line);
+        background: var(--purple-soft);
+        color: var(--purple-dark);
+        border-radius: 999px;
+        padding: 10px 16px;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 20px;
+        margin-bottom: 20px;
+      }
+
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        padding: 18px;
+        box-shadow: 0 20px 40px rgba(59, 41, 90, 0.08);
+        backdrop-filter: blur(10px);
+      }
+
+      .panel h2 {
+        margin: 0 0 14px;
+        font-size: 1.1rem;
+      }
+
+      label {
+        display: grid;
+        gap: 8px;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--muted);
+      }
+
+      .kpis {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .kpi {
+        padding: 14px 16px;
+        border-radius: 14px;
+        background: rgba(255,255,255,0.7);
+        border: 1px solid var(--line);
+      }
+
+      .kpi .label {
+        color: var(--muted);
+        font-size: 12px;
+        margin-bottom: 8px;
+      }
+
+      .kpi .value {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: var(--purple-dark);
+      }
+
+      .section-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 20px;
+      }
+
+      .card {
+        background: rgba(255,255,255,0.7);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 16px;
+      }
+
+      .card h3 {
+        margin: 0 0 14px;
+        font-size: 1rem;
+      }
+
+      .form-grid {
+        display: grid;
+        gap: 10px;
+      }
+
+      input, select, textarea, button {
+        font: inherit;
+      }
+
+      input, select, textarea {
+        width: 100%;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: rgba(255,255,255,0.9);
+        padding: 11px 12px;
+        color: var(--text);
+      }
+
+      textarea {
+        min-height: 92px;
+        resize: vertical;
+      }
+
+      button {
+        border: none;
+        border-radius: 12px;
+        padding: 11px 14px;
+        cursor: pointer;
+        font-weight: 700;
+      }
+
+      .primary {
+        background: linear-gradient(135deg, var(--purple), var(--purple-dark));
+        color: white;
+      }
+
+      .secondary {
+        background: var(--purple-soft);
+        color: var(--purple-dark);
+        border: 1px solid var(--line);
+      }
+
+      .danger {
+        background: #fbeaf0;
+        color: var(--danger);
+        border: 1px solid rgba(177, 77, 99, 0.2);
+      }
+
+      .list {
+        display: grid;
+        gap: 12px;
+        margin-top: 12px;
+      }
+
+      .item {
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: rgba(255,255,255,0.78);
+        padding: 12px;
+      }
+
+      .item-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 8px;
+      }
+
+      .tag {
+        display: inline-block;
+        background: var(--purple-soft);
+        color: var(--purple-dark);
+        border-radius: 999px;
+        padding: 6px 8px;
+        font-size: 10px;
+        font-weight: 700;
+      }
+
+      .meta {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .muted { color: var(--muted); }
+      .status {
+        min-height: 22px;
+        margin-top: 8px;
+        font-weight: 600;
+        color: var(--success);
+      }
+      .status.error { color: var(--danger); }
+
+      .reply-box {
+        margin-top: 10px;
+        display: grid;
+        gap: 8px;
+      }
+
+      @media (max-width: 980px) {
+        .grid, .section-grid { grid-template-columns: 1fr; }
+        .kpis { grid-template-columns: 1fr; }
+        .topbar { flex-direction: column; align-items: flex-start; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <div class="topbar">
+        <div class="brand">
+          <div class="brand-mark">B</div>
+          <div class="brand-text">BLOTATO</div>
+        </div>
+        <div class="pill">Social publishing console</div>
+      </div>
+
+      <div class="grid">
+        <section class="panel">
+          <h2>Overview</h2>
+          <div class="kpis">
+            <div class="kpi">
+              <div class="label">Users</div>
+              <div id="usersCount" class="value">0</div>
+            </div>
+            <div class="kpi">
+              <div class="label">Posts</div>
+              <div id="postsCount" class="value">0</div>
+            </div>
+            <div class="kpi">
+              <div class="label">Comments</div>
+              <div id="commentsCount" class="value">0</div>
+            </div>
+          </div>
+        </section>
+
+        <aside class="panel">
+          <h2>System status</h2>
+          <div class="muted">Health endpoint</div>
+          <button id="healthBtn" class="secondary" style="margin-top:10px;">Check health</button>
+          <div id="status" class="status">Ready.</div>
+        </aside>
+      </div>
+
+      <div class="section-grid">
+        <section class="card">
+          <h3>Users</h3>
+          <div class="form-grid">
+            <label>
+              Name
+              <input id="userName" placeholder="e.g. Blotato Brand" />
+            </label>
+            <button id="addUserBtn" class="primary">Add user</button>
+          </div>
+          <div id="usersList" class="list"></div>
+        </section>
+
+        <section class="card">
+          <h3>Posts</h3>
+          <div class="form-grid">
+            <label>
+              User
+              <select id="postUserId"></select>
+            </label>
+            <label>
+              Platform
+              <select id="postPlatform">
+                <option value="INSTAGRAM">INSTAGRAM</option>
+                <option value="YOUTUBE">YOUTUBE</option>
+                <option value="X">X</option>
+                <option value="FACEBOOK">FACEBOOK</option>
+                <option value="TIKTOK">TIKTOK</option>
+              </select>
+            </label>
+            <label>
+              External post ID
+              <input id="postExternalId" placeholder="e.g. yt_post_123" />
+            </label>
+            <button id="addPostBtn" class="primary">Add post</button>
+          </div>
+          <div id="postsList" class="list"></div>
+        </section>
+
+        <section class="card">
+          <h3>Comments</h3>
+          <div class="form-grid">
+            <label>
+              Post
+              <select id="commentPostId"></select>
+            </label>
+            <label>
+              Platform
+              <select id="commentPlatform">
+                <option value="INSTAGRAM">INSTAGRAM</option>
+                <option value="YOUTUBE">YOUTUBE</option>
+                <option value="X">X</option>
+                <option value="FACEBOOK">FACEBOOK</option>
+                <option value="TIKTOK">TIKTOK</option>
+              </select>
+            </label>
+            <label>
+              Author name
+              <input id="commentAuthor" placeholder="e.g. Jane Doe" />
+            </label>
+            <label>
+              External comment ID
+              <input id="commentExternalId" placeholder="e.g. cmt_123" />
+            </label>
+            <label>
+              Comment body
+              <textarea id="commentBody" placeholder="Write a comment..."></textarea>
+            </label>
+            <button id="addCommentBtn" class="primary">Add comment</button>
+          </div>
+          <div id="commentsList" class="list"></div>
+        </section>
+      </div>
+    </div>
+
+    <script>
+      const statusEl = document.getElementById('status');
+      const usersCountEl = document.getElementById('usersCount');
+      const postsCountEl = document.getElementById('postsCount');
+      const commentsCountEl = document.getElementById('commentsCount');
+
+      const usersListEl = document.getElementById('usersList');
+      const postsListEl = document.getElementById('postsList');
+      const commentsListEl = document.getElementById('commentsList');
+
+      const postUserIdEl = document.getElementById('postUserId');
+      const postPlatformEl = document.getElementById('postPlatform');
+      const postExternalIdEl = document.getElementById('postExternalId');
+      const commentPostIdEl = document.getElementById('commentPostId');
+      const commentPlatformEl = document.getElementById('commentPlatform');
+      const commentAuthorEl = document.getElementById('commentAuthor');
+      const commentExternalIdEl = document.getElementById('commentExternalId');
+      const commentBodyEl = document.getElementById('commentBody');
+
+      function setStatus(message, error = false) {
+        statusEl.textContent = message;
+        statusEl.classList.toggle('error', error);
+      }
+
+      async function fetchJson(url, options = {}) {
+        const res = await fetch(url, {
+          headers: { 'Content-Type': 'application/json' },
+          ...options,
+        });
+
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          throw new Error(data.error || 'Request failed');
+        }
+        return data;
+      }
+
+      function populateSelect(select, items, valueKey, labelKey) {
+        select.innerHTML = items.length
+          ? items.map((item) => `<option value="${item[valueKey]}">${item[labelKey]}</option>`).join('')
+          : '<option value="">No items</option>';
+      }
+
+      function renderUsers(users) {
+        usersCountEl.textContent = users.length;
+        if (!users.length) {
+          usersListEl.innerHTML = '<div class="item"><div class="muted">No users yet.</div></div>';
+          return;
+        }
+
+        usersListEl.innerHTML = users.map((user) => `
+          <div class="item">
+            <div class="item-head">
+              <strong>${user.name || `User #${user.id.slice(0, 8)}`}</strong>
+              <button class="danger" data-delete-user="${user.id}">Delete</button>
+            </div>
+            <div class="meta">ID: ${user.id}</div>
+            <div class="meta">Created ${new Date(user.createdAt).toLocaleString()}</div>
+          </div>
+        `).join('');
+      }
+
+      function renderPosts(posts) {
+        postsCountEl.textContent = posts.length;
+        populateSelect(postUserIdEl, users, 'id', 'id');
+        populateSelect(commentPostIdEl, posts, 'id', 'externalId');
+
+        if (!posts.length) {
+          postsListEl.innerHTML = '<div class="item"><div class="muted">No posts yet.</div></div>';
+          return;
+        }
+
+        postsListEl.innerHTML = posts.map((post) => `
+          <div class="item">
+            <div class="item-head">
+              <span class="tag">${post.platform}</span>
+              <button class="danger" data-delete-post="${post.id}">Delete</button>
+            </div>
+            <div><strong>External ID:</strong> ${post.externalId}</div>
+            <div class="meta">User: ${post.userId}</div>
+            <div class="meta">Comments: ${post.comments?.length || 0}</div>
+            <div class="meta">Platform-bound: comments on this post must use ${post.platform}</div>
+          </div>
+        `).join('');
+      }
+
+      function renderComments(comments) {
+        commentsCountEl.textContent = comments.length;
+        if (!comments.length) {
+          commentsListEl.innerHTML = '<div class="item"><div class="muted">No comments yet.</div></div>';
+          return;
+        }
+
+        commentsListEl.innerHTML = comments.map((comment) => `
+          <div class="item">
+            <div class="item-head">
+              <span class="tag">${comment.platform}</span>
+              <button class="danger" data-delete-comment="${comment.id}">Delete</button>
+            </div>
+            <div><strong>${comment.authorName}</strong></div>
+            <div class="meta">External: ${comment.externalId}</div>
+            <p>${comment.body}</p>
+            <div class="reply-box">
+              <label>
+                Reply author
+                <input data-reply-author="${comment.id}" placeholder="e.g. Blotato Team" />
+              </label>
+              <label>
+                Reply body
+                <textarea data-reply-body="${comment.id}" placeholder="Write a reply..."></textarea>
+              </label>
+              <button class="secondary" data-reply="${comment.id}">Reply</button>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      let users = [];
+      let posts = [];
+      let comments = [];
+
+      async function loadUsers() {
+        users = await fetchJson('/api/users');
+        renderUsers(users);
+        populateSelect(postUserIdEl, users, 'id', 'id');
+      }
+
+      async function loadPosts() {
+        posts = await fetchJson('/api/posts');
+        renderPosts(posts);
+      }
+
+      async function loadCommentsForSelectedPost() {
+        const postId = commentPostIdEl.value;
+        if (!postId) {
+          comments = [];
+          renderComments([]);
+          return;
+        }
+
+        comments = await fetchJson(`/api/posts/${postId}/comments`);
+        renderComments(comments);
+      }
+
+      async function refreshAll() {
+        await loadUsers();
+        await loadPosts();
+        await loadCommentsForSelectedPost();
+      }
+
+      async function addUser() {
+        const userName = document.getElementById('userName').value.trim();
+        try {
+          await fetchJson('/api/users', {
+            method: 'POST',
+            body: JSON.stringify({ name: userName || undefined }),
+          });
+          document.getElementById('userName').value = '';
+          setStatus('User created successfully.');
+          await refreshAll();
+        } catch (error) {
+          setStatus(error.message || 'Failed to create user', true);
+        }
+      }
+
+      async function addPost() {
+        const userId = postUserIdEl.value;
+        const platform = postPlatformEl.value;
+        const externalId = postExternalIdEl.value.trim();
+
+        if (!userId || !platform || !externalId) {
+          setStatus('Please select a user and provide an external post id.', true);
+          return;
+        }
+
+        try {
+          await fetchJson('/api/posts', {
+            method: 'POST',
+            body: JSON.stringify({ userId, platform, externalId }),
+          });
+          setStatus('Post created successfully.');
+          postExternalIdEl.value = '';
+          await refreshAll();
+        } catch (error) {
+          setStatus(error.message || 'Failed to create post', true);
+        }
+      }
+
+      async function addComment() {
+        const postId = commentPostIdEl.value;
+        const platform = commentPlatformEl.value;
+        const authorName = commentAuthorEl.value.trim();
+        const externalId = commentExternalIdEl.value.trim();
+        const body = commentBodyEl.value.trim();
+
+        if (!postId || !platform || !authorName || !externalId || !body) {
+          setStatus('Please complete all comment fields.', true);
+          return;
+        }
+
+        try {
+          await fetchJson(`/api/posts/${postId}/comments`, {
+            method: 'POST',
+            body: JSON.stringify({ authorName, body, platform, externalId }),
+          });
+          setStatus('Comment created successfully.');
+          commentAuthorEl.value = '';
+          commentExternalIdEl.value = '';
+          commentBodyEl.value = '';
+          await refreshAll();
+        } catch (error) {
+          setStatus(error.message || 'Failed to create comment', true);
+        }
+      }
+
+      async function deleteUser(userId) {
+        try {
+          await fetchJson(`/api/users/${userId}`, { method: 'DELETE' });
+          setStatus('User deleted.');
+          await refreshAll();
+        } catch (error) {
+          setStatus(error.message || 'Failed to delete user', true);
+        }
+      }
+
+      async function deletePost(postId) {
+        try {
+          await fetchJson(`/api/posts/${postId}`, { method: 'DELETE' });
+          setStatus('Post deleted.');
+          await refreshAll();
+        } catch (error) {
+          setStatus(error.message || 'Failed to delete post', true);
+        }
+      }
+
+      async function deleteComment(commentId) {
+        try {
+          await fetchJson(`/api/comments/${commentId}`, { method: 'DELETE' });
+          setStatus('Comment deleted.');
+          await refreshAll();
+        } catch (error) {
+          setStatus(error.message || 'Failed to delete comment', true);
+        }
+      }
+
+      async function replyToComment(commentId) {
+        const postId = commentPostIdEl.value;
+        const authorInput = document.querySelector(`[data-reply-author="${commentId}"]`);
+        const bodyInput = document.querySelector(`[data-reply-body="${commentId}"]`);
+        const authorName = authorInput?.value?.trim() || 'Blotato';
+        const body = bodyInput?.value?.trim();
+
+        if (!postId || !body) {
+          setStatus('Please provide a reply body.', true);
+          return;
+        }
+
+        try {
+          await fetchJson(`/api/posts/${postId}/comments/${commentId}/replies`, {
+            method: 'POST',
+            body: JSON.stringify({ authorName, body, platform: 'INSTAGRAM' }),
+          });
+          setStatus('Reply created.');
+          bodyInput.value = '';
+          authorInput.value = '';
+          await refreshAll();
+        } catch (error) {
+          setStatus(error.message || 'Failed to reply', true);
+        }
+      }
+
+      document.getElementById('addUserBtn').addEventListener('click', addUser);
+      document.getElementById('addPostBtn').addEventListener('click', addPost);
+      document.getElementById('addCommentBtn').addEventListener('click', addComment);
+      document.getElementById('healthBtn').addEventListener('click', async () => {
+        try {
+          const res = await fetch('/health');
+          const json = await res.json();
+          setStatus(res.ok ? json.status : json.error || 'Health check failed', !res.ok);
+        } catch (error) {
+          setStatus('Health check failed', true);
+        }
+      });
+
+      document.addEventListener('click', async (event) => {
+        const deleteUserButton = event.target.closest('[data-delete-user]');
+        const deletePostButton = event.target.closest('[data-delete-post]');
+        const deleteCommentButton = event.target.closest('[data-delete-comment]');
+        const replyButton = event.target.closest('[data-reply]');
+
+        if (deleteUserButton) {
+          await deleteUser(deleteUserButton.getAttribute('data-delete-user'));
+        }
+
+        if (deletePostButton) {
+          await deletePost(deletePostButton.getAttribute('data-delete-post'));
+        }
+
+        if (deleteCommentButton) {
+          await deleteComment(deleteCommentButton.getAttribute('data-delete-comment'));
+        }
+
+        if (replyButton) {
+          await replyToComment(replyButton.getAttribute('data-reply'));
+        }
+      });
+
+      commentPostIdEl.addEventListener('change', loadCommentsForSelectedPost);
+
+      refreshAll();
+    </script>
+  </body>
+</html>

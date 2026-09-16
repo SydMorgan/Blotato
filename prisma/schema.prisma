@@ -1,0 +1,60 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum SocialPlatform {
+  INSTAGRAM
+  YOUTUBE
+  X
+  FACEBOOK
+  TIKTOK
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  posts Post[]
+}
+
+model Post {
+  id         String         @id @default(uuid())
+  userId     String
+  platform   SocialPlatform
+  externalId String
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+
+  user     User      @relation(fields: [userId], references: [id])
+  comments Comment[]
+
+  @@unique([platform, externalId])
+  @@index([userId])
+}
+
+model Comment {
+  id         String         @id @default(uuid())
+  postId     String
+  platform   SocialPlatform
+  externalId String
+  parentId   String?
+  authorName String
+  body       String
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+
+  post    Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  parent  Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
+  replies Comment[] @relation("CommentReplies")
+
+  @@unique([postId, platform, externalId])
+  @@index([postId])
+  @@index([parentId])
+}
